@@ -1,0 +1,5 @@
+THINGS TO FIX
+[] Mediawiki isnt returning sections that are templated in some instances, i will have to find a way to either fix that or otherwise change the parsing to read the raw html instead.
+
+THINGS TO DO
+[] Check to see if the item is just available from a vendor, if so, store the vendor price and the MB price, sometimes items are available from a vendor, but only after doing multiple steps in a quest chain
