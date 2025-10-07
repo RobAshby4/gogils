@@ -6,7 +6,6 @@ import (
 	"os"
 )
 
-var itemLog ItemLog
 var scanner bufio.Scanner
 
 func main() {
@@ -15,14 +14,22 @@ func main() {
 }
 
 func initGlobals() {
-	itemLog = NewItemlog()
 	scanner = *bufio.NewScanner(os.Stdin)
 }
 
 func runloop() {
+	itemLog := GetItemLog()
+	fmt.Print("query > ")
 	for scanner.Scan() {
 		line := scanner.Text()
 		item, _ := itemLog.GetItemByName(line)
-		fmt.Println(item[0].IsCraftable())
+		if item.IsCraftable() {
+			recipeItems := itemLog.getRecipeItems(*item.recipe)
+			for _, recipeItem := range recipeItems {
+				fmt.Println(*recipeItem)
+			}
+			fmt.Println(*item)
+		}
+		fmt.Print("query > ")
 	}
 }

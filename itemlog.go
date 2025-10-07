@@ -15,7 +15,16 @@ type ItemLog struct {
 	numItems int
 }
 
-func NewItemlog() ItemLog {
+var itemLog *ItemLog
+
+func GetItemLog() *ItemLog {
+	if itemLog == nil {
+		InitItemLog()
+	}
+	return itemLog
+}
+
+func InitItemLog() {
 	// read items file into byte array
 	itemFile, err := os.Open("./items.json")
 	if err != nil {
@@ -48,35 +57,42 @@ func NewItemlog() ItemLog {
 		}
 	}
 
-	// create and return ItemLog
-	itemLog := ItemLog{itemsSlice, numItems}
-	return itemLog
+	// create and assign ItemLog
+	itemLog = &ItemLog{itemsSlice, numItems}
 }
 
-func (itemLog *ItemLog) GetItemByID(id int) (Item, error) {
+func (itemLog *ItemLog) GetItemByID(id int) (*Item, error) {
 	for _, item := range itemLog.items {
 		if item.id == id {
-			return item, nil
+			return &item, nil
 		}
 	}
 
 	// no matches found :(
-	return Item{}, fmt.Errorf("id %d not found", id)
+	return nil, fmt.Errorf("id %d not found", id)
 }
 
-func (itemLog *ItemLog) GetItemByName(query string) ([]Item, error) {
-	var matchedItems []Item
+func (itemLog *ItemLog) GetItemByName(query string) (*Item, error) {
 	for _, item := range itemLog.items {
 		// if substring is present, add to matches
-		if strings.Contains(strings.ToLower(item.name), strings.ToLower(query)) {
-			matchedItems = append(matchedItems, item)
+		if strings.EqualFold(item.name, query) {
+			return &item, nil
 		}
 	}
 
-	if len(matchedItems) > 0 {
-		return matchedItems, nil
-	}
-
 	// no matches found :(
-	return matchedItems, fmt.Errorf("%s not found", query)
+	return nil, fmt.Errorf("%s not found", query)
+}
+
+func (itemLog *ItemLog) getRecipeItems(recipe map[string]int) []*Item {
+	items := make([]*Item, 0)
+	for itemName := range recipe {
+		item, err := itemLog.GetItemByName(itemName)
+		if err != nil {
+			fmt.Println("Item not found " + itemName)
+			continue
+		}
+		items = append(items, item)
+	}
+	return items
 }

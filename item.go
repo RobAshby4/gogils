@@ -12,7 +12,7 @@ type Item struct {
 	// these are pointers because they may be nil
 	craftable    *bool
 	recipe       *map[string]int // name, num required
-	purchaseable bool
+	purchaseable *bool
 	price        int
 }
 
@@ -20,6 +20,7 @@ func NewItem(id int, name string) Item {
 	var newItem Item
 	newItem.id = id
 	newItem.name = name
+	newItem.price = 0
 	newItem.wikiName = strings.ReplaceAll(name, " ", "_")
 	return newItem
 }
@@ -27,7 +28,7 @@ func NewItem(id int, name string) Item {
 func (item *Item) IsCraftable() bool {
 	if item.craftable == nil {
 		val := true
-		recipe, err := GetRecipeFromWiki(*item)
+		recipe, err := GetRecipeFromWiki(item)
 		if err != nil {
 			item.craftable = &val
 			fmt.Println(err)
@@ -37,4 +38,11 @@ func (item *Item) IsCraftable() bool {
 		}
 	}
 	return *item.craftable
+}
+
+func (item *Item) FetchRecipe() (map[string]int, error) {
+	if item.IsCraftable() {
+		return *item.recipe, nil
+	}
+	return *item.recipe, fmt.Errorf("item is not craftable")
 }

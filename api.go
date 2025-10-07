@@ -50,7 +50,6 @@ type MediaWikiResponse struct {
 func extractArticleFromBody(apiResponse []byte) (string, error) {
 	var article string
 	var result MediaWikiResponse
-	fmt.Println(apiResponse)
 	err := json.Unmarshal(apiResponse, &result)
 	if err != nil {
 		return article, err
@@ -92,9 +91,9 @@ func processIngredientLine(line string, re *regexp.Regexp) (string, int) { // re
 	return ingredient, quantity
 }
 
-func GetRecipeFromWiki(item Item) (map[string]int, error) {
-	var recipe map[string]int
-	apiResponse, err := getItemPageResp(item)
+func GetRecipeFromWiki(item *Item) (map[string]int, error) {
+	recipe := make(map[string]int)
+	apiResponse, err := getItemPageResp(*item)
 	if err != nil {
 		return recipe, err
 	}
@@ -105,7 +104,12 @@ func GetRecipeFromWiki(item Item) (map[string]int, error) {
 	articleLines := strings.Split(article, "\n")
 	if articleContainsRecipe(articleLines) {
 		// search for ingredients and add them to the recipe
-		recipe = extractAllIngredients(articleLines)
+		extractedRecipe := extractAllIngredients(articleLines)
+		for itemName, quantity := range extractedRecipe {
+			if len(itemName) > 0 {
+				recipe[itemName] = quantity
+			}
+		}
 	} else {
 		err = fmt.Errorf("no recipe found on page")
 	}
