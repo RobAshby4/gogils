@@ -17,12 +17,17 @@ func initGlobals() {
 	scanner = *bufio.NewScanner(os.Stdin)
 }
 
-func runloop() {
-	itemLog := GetItemLog()
+func queryItems(itemLog ItemLog) {
+	// queryQueue := make([]Item, 1) will use a queue once supporting functions are added to items
 	fmt.Print("query > ")
 	for scanner.Scan() {
 		line := scanner.Text()
-		item, _ := itemLog.GetItemByName(line)
+		item, err := itemLog.GetItemByName(line)
+		if err != nil {
+			fmt.Println("item \"" + line + "\" not found")
+			fmt.Print("\nquery > ")
+			continue
+		}
 		if item.IsCraftable() {
 			recipeItems := itemLog.getRecipeItems(*item.recipe)
 			for _, recipeItem := range recipeItems {
@@ -32,4 +37,9 @@ func runloop() {
 		}
 		fmt.Print("query > ")
 	}
+}
+
+func runloop() {
+	itemLog := GetItemLog()
+	queryItems(*itemLog)
 }
