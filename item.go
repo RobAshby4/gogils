@@ -9,11 +9,11 @@ type Item struct {
 	id       int
 	name     string
 	wikiName string
+	price    int
 	// these are pointers because they may be nil
-	craftable    *bool
-	recipe       *map[string]int // name, num required
-	purchaseable *bool
-	price        int
+	craftable *bool
+	recipe    *map[string]int // name, num required
+	// purchaseable *bool
 }
 
 func NewItem(id int, name string) Item {
@@ -30,8 +30,8 @@ func (item *Item) IsCraftable() bool {
 		val := true
 		recipe, err := GetRecipeFromWiki(item)
 		if err != nil {
+			val = false
 			item.craftable = &val
-			fmt.Println(err)
 		} else {
 			item.craftable = &val
 			item.recipe = &recipe

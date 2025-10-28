@@ -84,6 +84,7 @@ func (itemLog *ItemLog) GetItemByName(query string) (*Item, error) {
 	return nil, fmt.Errorf("%s not found", query)
 }
 
+/* deprecated
 func (itemLog *ItemLog) getRecipeItems(recipe map[string]int) []*Item {
 	items := make([]*Item, 0)
 	for itemName := range recipe {
@@ -96,3 +97,4 @@ func (itemLog *ItemLog) getRecipeItems(recipe map[string]int) []*Item {
 	}
 	return items
 }
+*/
