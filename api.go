@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var mediaWikiApiUrl string = "https://ffxiv.consolegameswiki.com/mediawiki/api.php?action=parse&prop=wikitext&format=json&page="
@@ -92,6 +93,8 @@ func processIngredientLine(line string, re *regexp.Regexp) (string, int) { // re
 }
 
 func GetRecipeFromWiki(item *Item) (map[string]int, error) {
+	// soft rate limit
+	time.Sleep(1 * time.Second)
 	recipe := make(map[string]int)
 	apiResponse, err := getItemPageResp(*item)
 	if err != nil {
@@ -114,6 +117,5 @@ func GetRecipeFromWiki(item *Item) (map[string]int, error) {
 		err = fmt.Errorf("no recipe found on page")
 	}
 	// use MediaWiki API to fetch recipe, if not existant, return err
-	fmt.Println(recipe)
 	return recipe, err
 }
