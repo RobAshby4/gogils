@@ -9,10 +9,10 @@ up at once!
 Gogils is currently very much under development, but future 
 versions will include the ability to do:
 
-[x] recursive recipe searches on ingredients
-[ ] display both vendor and MB prices for items
-[ ] display current universalis prices across worlds
-[ ] show historic price data 
+- [x] recursive recipe searches on ingredients
+- [ ] display both vendor and MB prices for items
+- [ ] display current universalis prices across worlds
+- [ ] show historic price data 
 
 Anything outside of this is likely also outside the scope of the
 tool as it is currently indended to be used.
